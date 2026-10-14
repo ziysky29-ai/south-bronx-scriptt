@@ -1,9 +1,9 @@
 
--- SKIPPY STORE | Custom Roblox UI
--- Visual demo only
+-- SKIPPY STORE V3
+-- Complete UI Demo
+-- For Roblox Studio LocalScript
 
 local Players = game:GetService("Players")
-
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -11,6 +11,11 @@ local purple = Color3.fromRGB(168, 85, 247)
 local dark = Color3.fromRGB(23, 18, 31)
 local panel = Color3.fromRGB(38, 29, 49)
 local white = Color3.fromRGB(245, 235, 255)
+local green = Color3.fromRGB(150, 255, 180)
+local red = Color3.fromRGB(255, 125, 150)
+
+local old = playerGui:FindFirstChild("SkippyStore")
+if old then old:Destroy() end
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "SkippyStore"
@@ -18,9 +23,8 @@ gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
 local main = Instance.new("Frame")
-main.Name = "Main"
-main.Size = UDim2.fromOffset(330, 300)
-main.Position = UDim2.new(0.5, -165, 0.5, -150)
+main.Size = UDim2.fromOffset(330, 330)
+main.Position = UDim2.new(0.5, -165, 0.5, -165)
 main.BackgroundColor3 = dark
 main.BorderSizePixel = 0
 main.Parent = gui
@@ -28,13 +32,11 @@ main.Parent = gui
 Instance.new("UICorner", main).CornerRadius =
     UDim.new(0, 14)
 
-local stroke = Instance.new("UIStroke")
-stroke.Color = purple
-stroke.Thickness = 2
-stroke.Parent = main
+local outline = Instance.new("UIStroke", main)
+outline.Color = purple
+outline.Thickness = 2
 
 local header = Instance.new("Frame")
-header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, 55)
 header.BackgroundColor3 = panel
 header.BorderSizePixel = 0
@@ -43,8 +45,22 @@ header.Parent = main
 Instance.new("UICorner", header).CornerRadius =
     UDim.new(0, 12)
 
+local function label(text, position, size, color)
+    local obj = Instance.new("TextLabel")
+    obj.Size = size
+    obj.Position = position
+    obj.BackgroundTransparency = 1
+    obj.Text = text
+    obj.TextColor3 = color or white
+    obj.Font = Enum.Font.GothamBold
+    obj.TextSize = 13
+    obj.TextXAlignment = Enum.TextXAlignment.Left
+    obj.Parent = main
+    return obj
+end
+
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -65, 1, 0)
+title.Size = UDim2.new(1, -60, 1, 0)
 title.Position = UDim2.fromOffset(15, 0)
 title.BackgroundTransparency = 1
 title.Text = "SKIPPY STORE"
@@ -63,70 +79,58 @@ close.TextColor3 = white
 close.Font = Enum.Font.GothamBold
 close.TextSize = 16
 close.Parent = header
-
 Instance.new("UICorner", close).CornerRadius =
     UDim.new(0, 8)
 
-local subtitle = Instance.new("TextLabel")
-subtitle.Size = UDim2.new(1, -30, 0, 22)
-subtitle.Position = UDim2.fromOffset(15, 65)
-subtitle.BackgroundTransparency = 1
-subtitle.Text = "SOUTH BRONX | CUSTOM UI"
-subtitle.TextColor3 = Color3.fromRGB(185, 160, 205)
-subtitle.Font = Enum.Font.Gotham
-subtitle.TextSize = 11
-subtitle.TextXAlignment = Enum.TextXAlignment.Left
-subtitle.Parent = main
+label("SOUTH BRONX | CUSTOM UI",
+    UDim2.fromOffset(15, 65),
+    UDim2.new(1, -30, 0, 22),
+    Color3.fromRGB(185, 160, 205))
 
-local status = Instance.new("TextLabel")
-status.Size = UDim2.new(1, -30, 0, 25)
-status.Position = UDim2.fromOffset(15, 91)
-status.BackgroundTransparency = 1
-status.Text = "STATUS: STOPPED"
-status.TextColor3 = Color3.fromRGB(255, 125, 150)
-status.Font = Enum.Font.GothamBold
-status.TextSize = 12
-status.TextXAlignment = Enum.TextXAlignment.Left
-status.Parent = main
+local status = label("STATUS: STOPPED",
+    UDim2.fromOffset(15, 91),
+    UDim2.new(1, -30, 0, 35), red)
+status.TextWrapped = true
 
 local function makeButton(text, y)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -30, 0, 39)
-    button.Position = UDim2.fromOffset(15, y)
-    button.BackgroundColor3 = panel
-    button.Text = text
-    button.TextColor3 = white
-    button.Font = Enum.Font.GothamSemibold
-    button.TextSize = 14
-    button.Parent = main
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -30, 0, 39)
+    b.Position = UDim2.fromOffset(15, y)
+    b.BackgroundColor3 = panel
+    b.Text = text
+    b.TextColor3 = white
+    b.Font = Enum.Font.GothamSemibold
+    b.TextSize = 14
+    b.Parent = main
 
-    Instance.new("UICorner", button).CornerRadius =
+    Instance.new("UICorner", b).CornerRadius =
         UDim.new(0, 9)
 
-    local outline = Instance.new("UIStroke")
-    outline.Color = purple
-    outline.Thickness = 1
-    outline.Transparency = 0.45
-    outline.Parent = button
+    local s = Instance.new("UIStroke", b)
+    s.Color = purple
+    s.Transparency = 0.4
 
-    return button
+    return b
 end
 
-local fullyButton = makeButton("MS AUTO FULLY", 125)
-local farmButton = makeButton("AUTO FARM", 173)
-local startButton = makeButton("START", 221)
+local fullyButton = makeButton("MS AUTO FULLY", 133)
+local farmButton = makeButton("AUTO FARM", 180)
+local startButton = makeButton("START", 227)
+
+local mode = "MS AUTO FULLY"
+local running = false
 
 fullyButton.Activated:Connect(function()
-    status.Text = "MODE: MS AUTO FULLY (DEMO)"
+    mode = "MS AUTO FULLY"
+    status.Text = "MODE: MS AUTO FULLY (UI DEMO)"
     status.TextColor3 = purple
 end)
 
 farmButton.Activated:Connect(function()
-    status.Text = "MODE: AUTO FARM (DEMO)"
+    mode = "AUTO FARM"
+    status.Text = "MODE: AUTO FARM (UI DEMO)"
     status.TextColor3 = purple
 end)
-
-local running = false
 
 startButton.Activated:Connect(function()
     running = not running
@@ -135,20 +139,19 @@ startButton.Activated:Connect(function()
         startButton.Text = "STOP"
         startButton.BackgroundColor3 =
             Color3.fromRGB(100, 40, 120)
-        status.Text = "STATUS: UI STARTED"
-        status.TextColor3 =
-            Color3.fromRGB(190, 255, 190)
+        status.Text = mode .. " - RUNNING (DEMO)"
+        status.TextColor3 = green
     else
         startButton.Text = "START"
         startButton.BackgroundColor3 = panel
         status.Text = "STATUS: STOPPED"
-        status.TextColor3 =
-            Color3.fromRGB(255, 125, 150)
+        status.TextColor3 = red
     end
 end)
 
 close.Activated:Connect(function()
+    running = false
     gui:Destroy()
 end)
 
-print("Skippy Store UI loaded successfully")
+print("Skippy Store V3 loaded successfully")
