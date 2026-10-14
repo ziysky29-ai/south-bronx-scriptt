@@ -1,0 +1,89 @@
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local gui = player:WaitForChild("PlayerGui")
+
+local old = gui:FindFirstChild("SkippyStore")
+if old then old:Destroy() end
+
+local screen = Instance.new("ScreenGui")
+screen.Name = "SkippyStore"
+screen.ResetOnSpawn = false
+screen.Parent = gui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.fromOffset(290, 270)
+frame.Position = UDim2.new(0.5, -145, 0.5, -135)
+frame.BackgroundColor3 = Color3.fromRGB(24, 18, 32)
+frame.Parent = screen
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+local function button(text, y)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -24, 0, 38)
+    b.Position = UDim2.fromOffset(12, y)
+    b.BackgroundColor3 = Color3.fromRGB(105, 50, 145)
+    b.TextColor3 = Color3.new(1, 1, 1)
+    b.TextSize = 14
+    b.Text = text
+    b.Parent = frame
+
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 8)
+    c.Parent = b
+    return b
+end
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 34)
+title.BackgroundTransparency = 1
+title.Text = "SKIPPY STORE"
+title.TextColor3 = Color3.fromRGB(190, 125, 255)
+title.TextSize = 20
+title.Parent = frame
+
+local target = 10
+local completed = 0
+local running = false
+
+local count = button("TARGET PAKET: 10 (+)", 45)
+local fully = button("AUTO FULLY: OFF", 91)
+local farm = button("AUTO FARM: OFF", 137)
+local stop = button("STOP", 183)
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, -24, 0, 30)
+status.Position = UDim2.fromOffset(12, 228)
+status.BackgroundTransparency = 1
+status.TextColor3 = Color3.new(1, 1, 1)
+status.Text = "Status: Siap"
+status.TextSize = 13
+status.Parent = frame
+
+count.Activated:Connect(function()
+    target = target + 1
+    if target > 10 then target = 1 end
+    count.Text = "TARGET PAKET: " .. target .. " (+)"
+end)
+
+fully.Activated:Connect(function()
+    running = not running
+    fully.Text = running and "AUTO FULLY: ON" or "AUTO FULLY: OFF"
+    status.Text = running and "Status: Aktif (belum terhubung)" or "Status: Siap"
+end)
+
+farm.Activated:Connect(function()
+    running = not running
+    farm.Text = running and "AUTO FARM: ON" or "AUTO FARM: OFF"
+    status.Text = running and "Status: Aktif (belum terhubung)" or "Status: Siap"
+end)
+
+stop.Activated:Connect(function()
+    running = false
+    fully.Text = "AUTO FULLY: OFF"
+    farm.Text = "AUTO FARM: OFF"
+    status.Text = "Status: Dihentikan"
+end)
