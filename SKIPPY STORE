@@ -122,13 +122,13 @@ local running = false
 
 fullyButton.Activated:Connect(function()
     mode = "MS AUTO FULLY"
-    status.Text = "MODE: MS AUTO FULLY (UI DEMO)"
+    status.Text = "MODE: MS AUTO FULLY"
     status.TextColor3 = purple
 end)
 
 farmButton.Activated:Connect(function()
     mode = "AUTO FARM"
-    status.Text = "MODE: AUTO FARM (UI DEMO)"
+    status.Text = "MODE: AUTO FARM"
     status.TextColor3 = purple
 end)
 
@@ -139,7 +139,7 @@ startButton.Activated:Connect(function()
         startButton.Text = "STOP"
         startButton.BackgroundColor3 =
             Color3.fromRGB(100, 40, 120)
-        status.Text = mode .. " - RUNNING (DEMO)"
+        status.Text = mode .. " - RUNNING"
         status.TextColor3 = green
     else
         startButton.Text = "START"
